@@ -1,62 +1,85 @@
 <?php
+    include __DIR__.'/Models/Category.php';
+    include __DIR__.'/Models/Food.php';
+    include __DIR__.'/Models/Toy.php';
+    include __DIR__.'/Models/Accessory.php';
 
-class Categoria {
-    public string $nome;
-    public $icona;
-
-    public function __construct($nome, $icona) {
-        $this->nome = $nome;
-        $this->icona = $icona;
-    }
-
-}
-
-class Prodotto {
-    public $titolo;
-    public $prezzo;
-    public $immagine;
-    public $categoria;
-
-    public function __construct($titolo, $prezzo, $immagine, $categoria) {
-        $this->titolo = $titolo;
-        $this->prezzo = $prezzo;
-        $this->immagine = $immagine;
-        $this->categoria = $categoria;
-    }
-
-    public function getTipo() {
-        if ($this->categoria->nome === "Cibo") {
-            return "Cibo";
-        } elseif ($this->categoria->nome === "Gioco") {
-            return "Gioco";
-        } else {
-            return "Accessorio";
-        }
-
-    }
-}
-
-$categorie = [
-    new Categoria("Cibo", "🐶"),
-    new Categoria("Gioco", "🐱"),
-    new Categoria("Casa per animali", "🦆"),
-    new Categoria("pippo", "🦆"),
-];
-
-
-$prodotti = [
-    new Prodotto("Cibo per cani", 10, "https://arcaplanet.vtexassets.com/arquivos/ids/245336/almo-daily-menu-cat-400-gr-vitello.jpg", $categorie[0]),
-    new Prodotto("Gioco per gatti", 5, "https://arcaplanet.vtexassets.com/arquivos/ids/223852/trixie-gatto-gioco-active-mouse-peluche.jpg", $categorie[1]),
-    new Prodotto("Cuccia per cani", 20, "https://arcaplanet.vtexassets.com/arquivos/ids/258384/voliera-wilma1.jpg", $categorie[2]),
-    new Prodotto("Acquario per pesci", 50, "https://arcaplanet.vtexassets.com/arquivos/ids/272714/tetra-guppy-mini-flakes.jpg", $categorie[3]),
-];
-
-foreach ($prodotti as $prodotto) {
-    echo "<div class='card'>";
-    echo "<img src='{$prodotto->immagine}' width=200' alt='{$prodotto->titolo}'>";
-    echo "<h3>{$prodotto->titolo}</h3>";
-    echo "<p>{$prodotto->prezzo} €</p>";
-    echo "<p class='icona'><i class='{$prodotto->categoria->icona}'></i></p>";
-    echo "<p class='tipo'>{$prodotto->getTipo()}</p>";
-    echo "</div>";
-}
+    require_once __DIR__.'/database/db.php';
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>New Products</h1>
+            </div>
+            <div class="col-12">
+                <div class="row">
+                    <?php
+                        foreach($products as $product){
+                    ?>
+                        <div class="col-12 col-md-4">
+                            <div class="card h-100">
+                                <img src="<?php echo $product->image; ?>" alt="<?php echo $product->name; ?>" class="card-img-top">
+                                <div class="card-body">
+                                    <div class="card-title">
+                                        <h3><?php echo $product->name; ?></h3>
+                                    </div>
+                                    <div class="card-text">
+                                        <p>
+                                            <i class="<?php echo $product->category->icon; ?>"></i>
+                                            <?php echo $product->category->name; ?>
+                                    </div>
+                                    <div class="card-text">
+                                        <p>
+                                            <?php echo $product->getPrice(); ?>
+                                        </p>
+                                    </div>
+                                    <div class="card-text">
+                                        <p>
+                                            <?php if(get_class($product) == 'Food'){?>
+                                                <p>
+                                                    Weight: <?php echo $product->weight; ?>
+                                                </p>
+                                                <p>
+                                                    Ingredients: <?php echo implode(', ', $product->ingredients); ?>
+                                                </p>
+                                            <?php } ?>
+                                            <?php if(get_class($product) == 'Toy'){?>
+                                                <p>
+                                                    Features: <?php echo $product->features; ?>
+                                                </p>
+                                                <p>
+                                                    Size: <?php echo $product->size; ?>
+                                                </p>
+                                            <?php } ?>
+                                            <?php if(get_class($product) == 'Accessory'){?>
+                                                <p>
+                                                    Material: <?php echo $product->material; ?>
+                                                </p>
+                                                <p>
+                                                    Size: <?php echo $product->size; ?>
+                                                </p>
+                                            <?php } ?>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php
+                        }
+                    ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
